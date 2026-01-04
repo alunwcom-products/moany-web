@@ -52,14 +52,18 @@ export default function Accounts({ onSelectPlace }) {
 
   const columns = [
     { field: 'uuid', headerName: 'UUID', width: 300 },
-    { field: 'name', headerName: 'Account Name', width: 200 },
-    { field: 'sortcode', headerName: 'Sort Code', width: 150 },
-    { field: 'account_num', headerName: 'Account Number', width: 150 },
-    { field: 'type', headerName: 'Type', width: 150 },
-    { field: 'active', headerName: 'Active', width: 70 },
+    { field: 'name', headerName: 'Account Name', width: 200, editable: true },
+    { field: 'sortcode', headerName: 'Sort Code', width: 150, editable: true },
+    { field: 'account_num', headerName: 'Account Number', width: 150, editable: true },
+    { field: 'type', headerName: 'Type', width: 110, editable: true,
+      type: 'singleSelect', valueOptions: ['DEBIT', 'CREDIT']
+    },
+    { field: 'active', headerName: 'Active', width: 85, editable: true,
+      type: 'singleSelect', valueOptions: [true, false]
+    },
     { field: 'earliest', headerName: 'Earliest Transaction', width: 200 },
     { field: 'latest', headerName: 'Latest Transaction', width: 200 },
-    { field: 'starting_balance', headerName: 'Starting Balance', width: 200 },
+    { field: 'starting_balance', headerName: 'Starting Balance', width: 200, editable: true },
     { field: 'latest_balance', headerName: 'Latest Balance', width: 200 },
   ];
 
@@ -72,10 +76,13 @@ export default function Accounts({ onSelectPlace }) {
       <DataGrid
         rows={accounts}
         columns={columns}
-        initialState={{ pagination: { paginationModel } }}
+        //initialState={{ pagination: { paginationModel } }}
+        pagination
         pageSizeOptions={[5, 10]}
-        checkboxSelection
+        checkboxSelection={false}
         sx={{ border: 0 }}
+        density='compact'
+        disableMultipleRowSelection={true}
       />
     </Paper>
   );
