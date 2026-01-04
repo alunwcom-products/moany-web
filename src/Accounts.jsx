@@ -27,12 +27,7 @@ export default function Accounts({ onSelectPlace }) {
           throw new Error("Failed to fetch accounts.")
         }
 
-        const temp_acc = data.results.map((item, index) => ({
-          ...item,
-          id: index
-        }));
-
-        setAccounts(temp_acc);
+        setAccounts(data.results);
 
         //console.log(accounts);
 
@@ -50,26 +45,73 @@ export default function Accounts({ onSelectPlace }) {
     console.error(`ERROR: {error}`);
   }
 
+  const currencyFormatter = new Intl.NumberFormat('en-GB', {
+    style: 'currency',
+    currency: 'GBP',
+  });
+
   const columns = [
     { field: 'uuid', headerName: 'UUID', width: 300 },
     { field: 'name', headerName: 'Account Name', width: 200, editable: true },
     { field: 'sortcode', headerName: 'Sort Code', width: 150, editable: true },
     { field: 'account_num', headerName: 'Account Number', width: 150, editable: true },
-    { field: 'type', headerName: 'Type', width: 110, editable: true,
+    {
+      field: 'type', headerName: 'Type', width: 110, editable: true,
       type: 'singleSelect', valueOptions: ['DEBIT', 'CREDIT']
     },
-    { field: 'active', headerName: 'Active', width: 85, editable: true,
-      type: 'singleSelect', valueOptions: [true, false]
+    {
+      field: 'active',
+      headerName: 'Active',
+      width: 85,
+      editable: true,
+      type: 'singleSelect',
+      valueFormatter: (value) => {
+        return value === true ? 'Yes' : 'No';
+      },
+      valueOptions: [
+        { value: true, label: 'Yes' },
+        { value: false, label: 'No' },
+      ],
     },
-    { field: 'earliest', headerName: 'Earliest Transaction', width: 200 },
-    { field: 'latest', headerName: 'Latest Transaction', width: 200 },
-    { field: 'starting_balance', headerName: 'Starting Balance', width: 200, editable: true },
-    { field: 'latest_balance', headerName: 'Latest Balance', width: 200 },
+    {
+      field: 'earliest', headerName: 'Earliest Transaction', width: 150, type: 'date',
+      valueGetter: (value) => {
+        return new Date(value)
+      }
+    },
+    {
+      field: 'latest', headerName: 'Latest Transaction', width: 150, type: 'date',
+      valueGetter: (value) => {
+        return new Date(value)
+      }
+    },
+    {
+      field: 'starting_balance', headerName: 'Starting Balance', width: 150,
+      type: 'number', editable: true, valueFormatter: (value) => {
+        if (!value) return value;
+        return currencyFormatter.format(value);
+      },
+    },
+    {
+      field: 'latest_balance', headerName: 'Latest Balance', width: 150,
+      type: 'number', editable: true, valueFormatter: (value) => {
+        if (!value) return value;
+        return currencyFormatter.format(value);
+      },
+
+    },
   ];
 
+  //const paginationModel = { page: 0, pageSize: 3 };
 
+  const rowUpdate = (updatedRow, originalRow) => {
+    console.log(updatedRow);
+    return updatedRow;
+  }
 
-  const paginationModel = { page: 0, pageSize: 3 };
+  const errorHandler = (error) => {
+    console.error('Error handler called! ' + error);
+  }
 
   return (
     <Paper sx={{ height: 400, width: '100%' }}>
@@ -77,12 +119,15 @@ export default function Accounts({ onSelectPlace }) {
         rows={accounts}
         columns={columns}
         //initialState={{ pagination: { paginationModel } }}
+        processRowUpdate={(updatedRow, originalRow) => rowUpdate(updatedRow, originalRow)}
+        onProcessRowUpdateError={errorHandler}
         pagination
         pageSizeOptions={[5, 10]}
         checkboxSelection={false}
         sx={{ border: 0 }}
         density='compact'
         disableMultipleRowSelection={true}
+        getRowId={(row) => row.uuid}
       />
     </Paper>
   );
