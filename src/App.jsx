@@ -5,18 +5,18 @@ import { useState } from 'react'
 
 function App() {
 
-  const [login, setLogin] = useState({ username: undefined, token: undefined});
+  const [login, setLogin] = useState({});
 
   const handleLoginChange = (newLogin) => {
-    //console.log(`Login change: '${newLogin.username}', '${newLogin.token}'`);
-    setLogin(() => newLogin)
-    console.log(`New login state: ${JSON.stringify(login)}`);
+    //console.log('Login change: ', newLogin);
+    setLogin(newLogin);
+    //console.log('New login state: ', login);
   }
 
   return (
     <>
       <Login login={login} onLoginChange={handleLoginChange} />
-      <Accounts></Accounts>
+      { login.username && <Accounts login={login} /> }
     </>
   )
 }

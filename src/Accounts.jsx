@@ -4,7 +4,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 
 export default function Accounts({ login }) {
-  console.log('render Accounts.jsx');
+  //console.log('render Accounts.jsx');
 
   const [isFetching, setIsFetching] = useState(false);
   const [accounts, setAccounts] = useState([]);
@@ -40,7 +40,7 @@ export default function Accounts({ login }) {
     }
 
     fetchAccounts();
-  }, []);
+  }, [login]);
 
   if (error) {
     console.error(`ERROR: {error}`);

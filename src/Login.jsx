@@ -4,11 +4,11 @@ import { useState } from "react";
 export default function Login({ login, onLoginChange }) {
 
   // 1. Setup state to store form values
-  const [credentials, setCredentials] = {
+  const [credentials, setCredentials] = useState({
     username: '',
     password: ''
-  };
-  
+  });
+
   const [error, setError] = useState();
 
   // 2. Update state when user types
@@ -25,13 +25,13 @@ export default function Login({ login, onLoginChange }) {
 
     event.preventDefault(); // Prevents the page from refreshing
 
-    console.log('Login Submitted:', credentials);
+    console.log('Login Submitted.');
     // Access values via: credentials.username and credentials.password
 
     try {
       const body = JSON.stringify({ user: credentials.username, password: credentials.password });
 
-      console.log('Form body', body);
+      //console.log('Form body', body);
 
       const response = await fetch('http://localhost:8888/user', {
         method: "POST",
@@ -42,15 +42,22 @@ export default function Login({ login, onLoginChange }) {
       });
       const data = await response.json();
 
-      console.log('Login response', data);
+      //console.log('Login response', data);
 
       if (!response.ok) {
         throw new Error("Failed to fetch accounts.")
       }
 
-      onLoginChange({ username: credentials.username, token: data.token})
+      onLoginChange({ username: credentials.username, token: data.token })
 
       //console.log(accounts);
+
+      setCredentials(() => {
+        return {
+          username: '',
+          password: ''
+        }
+      });
 
     } catch (error) {
       setError({ message: error.message || 'Unknown error occurred.' });
@@ -59,16 +66,25 @@ export default function Login({ login, onLoginChange }) {
   };
 
   const logout = () => {
-    console.log('TODO logout...');
-    setCredentials({username: '', password: ''})
+    console.log('Logout.');
+    setCredentials({ username: '', password: '' })
     onLoginChange({ username: undefined, token: undefined });
   }
 
   const logoutLabel = `Logout ${login.username}`;
 
+  if (login.token) {
+    return (
+      <Box sx={{ tp: 2, pb: 2 }}>
+        <Chip label={logoutLabel} onClick={logout} />
+      </Box>
+    )
+  }
+
   return (
     <>
       <Box sx={{ tp: 2, pb: 2 }}>
+
         <Stack
           direction={{ xs: 'column', sm: 'row' }}
           spacing={2}
@@ -112,8 +128,6 @@ export default function Login({ login, onLoginChange }) {
             }}
             type="submit" // Crucial for Enter key support
           >Login</Button>
-
-          { login.token && <Chip label={logoutLabel} onClick={logout} /> }
 
         </Stack>
       </Box>
