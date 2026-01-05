@@ -122,7 +122,6 @@ export default function Accounts({ onSelectPlace }) {
         onProcessRowUpdateError={errorHandler}
         pagination
         pageSizeOptions={[10, 25, 100]}
-        checkboxSelection={false}
         sx={{
           '& .ro': { // read-only className
             backgroundColor: '#f5f5f5', // Light grey background
@@ -131,7 +130,9 @@ export default function Accounts({ onSelectPlace }) {
           }
         }}
         density='compact'
-        disableMultipleRowSelection={true}
+        //checkboxSelection
+        //disableMultipleRowSelection
+        disableRowSelectionOnClick
         getRowId={(row) => row.uuid}
       />
     </Paper>
