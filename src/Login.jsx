@@ -1,8 +1,70 @@
-import { Box, Button, Stack, TextField } from "@mui/material";
+import { Box, Button, Chip, Stack, TextField } from "@mui/material";
 import { useState } from "react";
 
-export default function Login({ username, password }) {
-  const [count, setCount] = useState(0);
+export default function Login({ login, onLoginChange }) {
+
+  // 1. Setup state to store form values
+  const [credentials, setCredentials] = {
+    username: '',
+    password: ''
+  };
+  
+  const [error, setError] = useState();
+
+  // 2. Update state when user types
+  const handleTextInputChange = (e) => {
+    const { name, value } = e.target;
+    setCredentials((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // 3. The function that handles the login logic
+  const handleLogin = async (event) => {
+
+    event.preventDefault(); // Prevents the page from refreshing
+
+    console.log('Login Submitted:', credentials);
+    // Access values via: credentials.username and credentials.password
+
+    try {
+      const body = JSON.stringify({ user: credentials.username, password: credentials.password });
+
+      console.log('Form body', body);
+
+      const response = await fetch('http://localhost:8888/user', {
+        method: "POST",
+        body: body,
+        headers: {
+          'Content-Type': 'application/json' // Tell the server you're sending JSON
+        },
+      });
+      const data = await response.json();
+
+      console.log('Login response', data);
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch accounts.")
+      }
+
+      onLoginChange({ username: credentials.username, token: data.token})
+
+      //console.log(accounts);
+
+    } catch (error) {
+      setError({ message: error.message || 'Unknown error occurred.' });
+    }
+
+  };
+
+  const logout = () => {
+    console.log('TODO logout...');
+    setCredentials({username: '', password: ''})
+    onLoginChange({ username: undefined, token: undefined });
+  }
+
+  const logoutLabel = `Logout ${login.username}`;
 
   return (
     <>
@@ -14,20 +76,28 @@ export default function Login({ username, password }) {
           component="form"
           noValidate
           autoComplete="off"
+          onSubmit={handleLogin} // Triggers on Button click OR Enter key
         >
 
           <TextField
+            name="username" // Matches state key
+            value={credentials.username}
+            onChange={handleTextInputChange}
             label="Username"
             variant="outlined"
             size="small" // Ensures a compact height
-
+            sx={{ width: '200px' }}
           />
+
           <TextField
+            name="password" // Matches state key
             label="Password"
             type="password"
             variant="outlined"
             size="small" // Matches the username field
-
+            value={credentials.password}
+            onChange={handleTextInputChange}
+            sx={{ width: '200px' }}
           />
 
           <Button
@@ -40,8 +110,10 @@ export default function Login({ username, password }) {
                 borderWidth: '1px', // Prevents the border from thickening on hover
               }
             }}
-            onClick={() => console.log('Submit!')}
+            type="submit" // Crucial for Enter key support
           >Login</Button>
+
+          { login.token && <Chip label={logoutLabel} onClick={logout} /> }
 
         </Stack>
       </Box>

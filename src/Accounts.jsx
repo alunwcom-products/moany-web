@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 
-export default function Accounts({ onSelectPlace }) {
+export default function Accounts({ login }) {
   console.log('render Accounts.jsx');
 
   const [isFetching, setIsFetching] = useState(false);
@@ -17,7 +17,9 @@ export default function Accounts({ onSelectPlace }) {
       setIsFetching(true);
 
       try {
-        const response = await fetch('http://localhost:8888/accountSummary');
+        const response = await fetch('http://localhost:8888/accountSummary', {
+          headers: { 'Authorization': `Bearer ${login.token}` }
+        });
         const data = await response.json();
 
         //console.log(JSON.stringify(data.results, null, 2));
