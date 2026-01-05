@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import AccountLine from './AccountLine.jsx';
 
 import { DataGrid } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
@@ -51,7 +50,7 @@ export default function Accounts({ onSelectPlace }) {
   });
 
   const columns = [
-    { field: 'uuid', headerName: 'UUID', width: 300 },
+    { field: 'uuid', headerName: 'UUID', width: 300, cellClassName: 'ro' },
     { field: 'name', headerName: 'Account Name', width: 200, editable: true },
     { field: 'sortcode', headerName: 'Sort Code', width: 150, editable: true },
     { field: 'account_num', headerName: 'Account Number', width: 150, editable: true },
@@ -74,13 +73,13 @@ export default function Accounts({ onSelectPlace }) {
       ],
     },
     {
-      field: 'earliest', headerName: 'Earliest Transaction', width: 150, type: 'date',
+      field: 'earliest', headerName: 'Earliest Transaction', width: 150, type: 'date', cellClassName: 'ro',
       valueGetter: (value) => {
         return new Date(value)
       }
     },
     {
-      field: 'latest', headerName: 'Latest Transaction', width: 150, type: 'date',
+      field: 'latest', headerName: 'Latest Transaction', width: 150, type: 'date', cellClassName: 'ro',
       valueGetter: (value) => {
         return new Date(value)
       }
@@ -93,7 +92,7 @@ export default function Accounts({ onSelectPlace }) {
       },
     },
     {
-      field: 'latest_balance', headerName: 'Latest Balance', width: 150,
+      field: 'latest_balance', headerName: 'Latest Balance', width: 150, cellClassName: 'ro',
       type: 'number', editable: true, valueFormatter: (value) => {
         if (!value) return value;
         return currencyFormatter.format(value);
@@ -118,13 +117,19 @@ export default function Accounts({ onSelectPlace }) {
       <DataGrid
         rows={accounts}
         columns={columns}
-        //initialState={{ pagination: { paginationModel } }}
+        initialState={{ pagination: { paginationModel: { pageSize: 25 } } }}
         processRowUpdate={(updatedRow, originalRow) => rowUpdate(updatedRow, originalRow)}
         onProcessRowUpdateError={errorHandler}
         pagination
-        pageSizeOptions={[5, 10]}
+        pageSizeOptions={[10, 25, 100]}
         checkboxSelection={false}
-        sx={{ border: 0 }}
+        sx={{
+          '& .ro': { // read-only className
+            backgroundColor: '#f5f5f5', // Light grey background
+            color: '#818181',           // Muted text color
+            //cursor: 'not-allowed',      // Changes the mouse pointer
+          }
+        }}
         density='compact'
         disableMultipleRowSelection={true}
         getRowId={(row) => row.uuid}
