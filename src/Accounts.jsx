@@ -20,7 +20,7 @@ export default function Accounts({ onSelectPlace }) {
         const response = await fetch('http://localhost:8888/accountSummary');
         const data = await response.json();
 
-        console.log(JSON.stringify(data.results, null, 2));
+        //console.log(JSON.stringify(data.results, null, 2));
 
         if (!response.ok) {
           throw new Error("Failed to fetch accounts.")
