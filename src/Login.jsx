@@ -3,13 +3,14 @@ import { useState } from "react";
 
 export default function Login({ login, onLoginChange }) {
 
-  // 1. Setup state to store form values
-  const [credentials, setCredentials] = useState({
-    username: '',
-    password: ''
-  });
+  const BLANK_CREDENTIALS = {
+    username: '', password: ''
+  };
 
-  const [error, setError] = useState();
+  // 1. Setup state to store form values
+  const [credentials, setCredentials] = useState(BLANK_CREDENTIALS);
+
+  const [error, setError] = useState({});
 
   // 2. Update state when user types
   const handleTextInputChange = (e) => {
@@ -22,16 +23,13 @@ export default function Login({ login, onLoginChange }) {
 
   // 3. The function that handles the login logic
   const handleLogin = async (event) => {
-
+    console.log('Login Submitted.');
     event.preventDefault(); // Prevents the page from refreshing
 
-    console.log('Login Submitted.');
-    // Access values via: credentials.username and credentials.password
+    setError({});
 
     try {
       const body = JSON.stringify({ user: credentials.username, password: credentials.password });
-
-      //console.log('Form body', body);
 
       const response = await fetch('http://localhost:8888/user', {
         method: "POST",
@@ -42,26 +40,24 @@ export default function Login({ login, onLoginChange }) {
       });
       const data = await response.json();
 
-      //console.log('Login response', data);
+      console.log('Login response: ', response.status);
 
       if (!response.ok) {
-        throw new Error("Failed to fetch accounts.")
+        throw new Error("Authentication failed.")
       }
 
       onLoginChange({ username: credentials.username, token: data.token })
 
-      //console.log(accounts);
-
-      setCredentials(() => {
-        return {
-          username: '',
-          password: ''
-        }
-      });
-
     } catch (error) {
+      //console.error(error);
       setError({ message: error.message || 'Unknown error occurred.' });
+      onLoginChange({});
     }
+
+    setCredentials((prevCredentials) => {
+      prevCredentials.password = '';
+      return prevCredentials;
+    });
 
   };
 
@@ -128,6 +124,8 @@ export default function Login({ login, onLoginChange }) {
             }}
             type="submit" // Crucial for Enter key support
           >Login</Button>
+
+          <p>{error.message}</p>
 
         </Stack>
       </Box>

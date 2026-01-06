@@ -1,3 +1,19 @@
+# exp-vite-moany
+
+Initial PoC for React front-end to moany (node-moany API).
+
+Initial aim - to provide working app with moany login and CRUD UI for accounts.
+
+## TODO/ISSUES
+
+- Handle expired token (and refresh token on each API call)
+- Complete storing of account changes
+- Allow adding of accounts
+- Provide filter to hide non-active accounts by default
+
+
+----
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

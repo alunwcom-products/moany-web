@@ -43,7 +43,7 @@ export default function Accounts({ login }) {
   }, [login]);
 
   if (error) {
-    console.error(`ERROR: {error}`);
+    console.error('ERROR: ', error);
   }
 
   const currencyFormatter = new Intl.NumberFormat('en-GB', {
