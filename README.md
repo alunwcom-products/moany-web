@@ -1,4 +1,4 @@
-# exp-vite-moany
+# moany-web
 
 Initial PoC for React front-end to moany (node-moany API).
 
