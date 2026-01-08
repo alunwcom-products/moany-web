@@ -34,24 +34,28 @@ function CustomToolbar() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
+    const newRow = {
+      uuid: uuidv4(),
+      name: formData.get('name'),
+      account_num: formData.get('account_num'),
+      sortcode: formData.get('sortcode'),
+      type: "DEBIT",
+      active: true,
+      earliest: new Date(0),
+      latest: new Date(0),
+      starting_balance: 0,
+      latest_balance: 0,
+    };
+
     apiRef.current.updateRows([
-      {
-        uuid: uuidv4(),
-        name: formData.get('name'),
-        account_num: formData.get('account_num'),
-        sortcode: formData.get('sortcode'),
-        type: "DEBIT",
-        active: true,
-        earliest: new Date(0),
-        latest: new Date(0),
-        starting_balance: 0,
-        latest_balance: 0,
-      },
+      newRow
     ]);
 
     // TODO persist new account before closing
-    console.log('TODO: store new account');
-    
+    console.log(`INSERT: ${JSON.stringify(newRow, null, 2)}`);
+
+    //console.log(apiRef.current.getAllRowIds());
+
     handleClose();
   };
 
@@ -148,7 +152,7 @@ function CustomToolbar() {
   );
 }
 
-export default function GridToolbarCustomPanel({ login }) {
+export default function AccountsDataGrid({ login }) {
 
   const [isFetching, setIsFetching] = useState(false);
   const [accounts, setAccounts] = useState([]);
