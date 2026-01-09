@@ -1,0 +1,46 @@
+
+const BASE_URL = 'http://localhost:8888'
+
+//
+async function getAccountSummary(token) {
+  // try {
+    const response = await fetch(`${BASE_URL}/accountSummary`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await response.json();
+    console.debug(data);
+    if (!response.ok) {
+      throw new Error("Failed to fetch accounts.")
+    }
+    return data.results;
+  // } catch (error) {
+    //setError({ message: error.message || 'Unknown error occurred.' });
+    // throw new Error('Error fetching account summary: ');
+  // }
+}
+
+// insert/update (PUT) account record supplied as JSON
+async function setAccount(account, token) {
+  try {
+    const body = JSON.stringify(account);
+    const response = await fetch(`${BASE_URL}/account`, {
+      method: "PUT",
+      body: body,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Unable to store account.")
+    }
+  } catch (error) {
+    //setError({ message: error.message || 'Unknown error occurred.' });
+    throw new Error('Error storing account: ');
+  }
+}
+
+export {
+  getAccountSummary,
+  setAccount,
+}
