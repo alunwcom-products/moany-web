@@ -21,8 +21,9 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 
 import { v4 as uuidv4 } from 'uuid';
+import { getAccountSummary, setAccount } from './api/accounts';
 
-function CustomToolbar() {
+function CustomToolbar({ token, handleFetch }) {
   const apiRef = useGridApiContext();
   const [newPanelOpen, setNewPanelOpen] = useState(false);
   const newPanelTriggerRef = useRef(null);
@@ -52,10 +53,10 @@ function CustomToolbar() {
     ]);
 
     // TODO persist new account before closing
-    console.log(`INSERT: ${JSON.stringify(newRow, null, 2)}`);
-
-    //console.log(apiRef.current.getAllRowIds());
-
+    console.debug(`INSERT: ${JSON.stringify(newRow, null, 2)}`);
+    handleFetch(true);
+    setAccount(newRow, token);
+    handleFetch(false);
     handleClose();
   };
 
@@ -156,7 +157,13 @@ export default function AccountsDataGrid({ login }) {
 
   const [isFetching, setIsFetching] = useState(false);
   const [accounts, setAccounts] = useState([]);
-  const [error, setError] = useState();
+  // const [error, setError] = useState();
+  const [accountUpdated, setAccountUpdated] = useState(false);
+
+  // update state in a function to that child toolbar component can update the state
+  const handleFetch = (isFetching) => {
+      setIsFetching(isFetching)
+  }
 
   const currencyFormatter = new Intl.NumberFormat('en-GB', {
     style: 'currency',
@@ -229,26 +236,18 @@ export default function AccountsDataGrid({ login }) {
 
   useEffect(() => {
     async function fetchAccounts() {
-      setIsFetching(true);
-      try {
-        const response = await fetch('http://localhost:8888/accountSummary', {
-          headers: { 'Authorization': `Bearer ${login.token}` }
-        });
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error("Failed to fetch accounts.")
-        }
-        setAccounts(data.results);
-      } catch (error) {
-        setError({ message: error.message || 'Unknown error occurred.' });
-      }
-      setIsFetching(false);
+      handleFetch(true);
+      setAccounts(await getAccountSummary(login.token));
+      handleFetch(false);
     }
     fetchAccounts();
-  }, [login]);
+  }, [login, accountUpdated]);
 
-  const rowUpdate = (updatedRow, originalRow) => {
+  const rowUpdate = async (updatedRow, originalRow) => {
     console.log(`UPDATE: ${JSON.stringify(updatedRow, null, 2)}`);
+    handleFetch(true);
+    setAccount(updatedRow, login.token)
+    handleFetch(false);
     return updatedRow;
   }
 
@@ -264,6 +263,12 @@ export default function AccountsDataGrid({ login }) {
         initialState={initialState}
         loading={isFetching}
         slots={{ toolbar: CustomToolbar }}
+        slotProps={{
+          toolbar: {
+            token: login.token,
+            handleFetch
+          }
+        }}
         showToolbar
         editMode='row'
         getRowId={(row) => row.uuid}
@@ -273,8 +278,8 @@ export default function AccountsDataGrid({ login }) {
         onProcessRowUpdateError={errorHandler}
         sx={{
           '& .ro': { // read-only className
-            backgroundColor: '#f5f5f5', // Light grey background
-            color: '#818181',           // Muted text color
+            backgroundColor: '#f5f5f5ff', // Light grey background
+            //color: '#818181',           // Muted text color
             //cursor: 'not-allowed',      // Changes the mouse pointer
           }
         }}
