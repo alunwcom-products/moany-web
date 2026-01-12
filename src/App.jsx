@@ -3,8 +3,7 @@ import Login from './Login'
 import { useState } from 'react'
 import AccountsDataGrid from './AccountsDataGrid';
 import CssBaseline from '@mui/material/CssBaseline';
-import { Alert, IconButton, Snackbar } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { Alert, Snackbar } from '@mui/material';
 
 function App() {
 
