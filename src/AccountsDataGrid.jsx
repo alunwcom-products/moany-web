@@ -153,7 +153,7 @@ function CustomToolbar({ token, handleFetch }) {
   );
 }
 
-export default function AccountsDataGrid({ login }) {
+export default function AccountsDataGrid({ login, setError }) {
 
   const [isFetching, setIsFetching] = useState(false);
   const [accounts, setAccounts] = useState([]);
@@ -162,7 +162,7 @@ export default function AccountsDataGrid({ login }) {
 
   // update state in a function to that child toolbar component can update the state
   const handleFetch = (isFetching) => {
-      setIsFetching(isFetching)
+    setIsFetching(isFetching)
   }
 
   const currencyFormatter = new Intl.NumberFormat('en-GB', {
@@ -237,7 +237,13 @@ export default function AccountsDataGrid({ login }) {
   useEffect(() => {
     async function fetchAccounts() {
       handleFetch(true);
-      setAccounts(await getAccountSummary(login.token));
+      try {
+        setAccounts(await getAccountSummary(login.token));
+      } catch (error) {
+        // TODO
+        console.error('Error loading accounts summary');
+        setError('Error loading accounts summary');
+      }
       handleFetch(false);
     }
     fetchAccounts();
@@ -278,7 +284,7 @@ export default function AccountsDataGrid({ login }) {
         onProcessRowUpdateError={errorHandler}
         sx={{
           '& .ro': { // read-only className
-            backgroundColor: '#f5f5f5ff', // Light grey background
+            backgroundColor: '#f9f9f9ff', // Light grey background
             //color: '#818181',           // Muted text color
             //cursor: 'not-allowed',      // Changes the mouse pointer
           }

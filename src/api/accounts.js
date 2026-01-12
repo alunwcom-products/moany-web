@@ -8,7 +8,7 @@ async function getAccountSummary(token) {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     const data = await response.json();
-    console.debug(data);
+    //console.debug(data);
     if (!response.ok) {
       throw new Error("Failed to fetch accounts.")
     }
