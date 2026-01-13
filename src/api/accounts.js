@@ -4,18 +4,18 @@ const BASE_URL = 'http://localhost:8888'
 //
 async function getAccountSummary(token) {
   // try {
-    const response = await fetch(`${BASE_URL}/accountSummary`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    const data = await response.json();
-    //console.debug(data);
-    if (!response.ok) {
-      throw new Error("Failed to fetch accounts.")
-    }
-    return data.results;
+  const response = await fetch(`${BASE_URL}/accountSummary`, {
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
+  const data = await response.json();
+  //console.debug(data);
+  if (!response.ok) {
+    throw new Error("Failed to fetch accounts.")
+  }
+  return data.results;
   // } catch (error) {
-    //setError({ message: error.message || 'Unknown error occurred.' });
-    // throw new Error('Error fetching account summary: ');
+  //setError({ message: error.message || 'Unknown error occurred.' });
+  // throw new Error('Error fetching account summary: ');
   // }
 }
 
@@ -40,7 +40,33 @@ async function setAccount(account, token) {
   }
 }
 
+async function authenticate(username, password) {
+  try {
+    const body = JSON.stringify({ user: username, password: password });
+    const response = await fetch(`${BASE_URL}/user`, {
+      method: "POST",
+      body: body,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    });
+    const data = await response.json();
+    console.debug('Login response: ', response.status);
+    if (!response.ok) {
+      throw new Error("Authentication failed.")
+    }
+    console.debug(data);
+    return data.token;
+  } catch (error) {
+    //console.error(error);
+    //setError({ message: error.message || 'Unknown error occurred.' });
+    //onLoginChange({});
+    throw error;
+  }
+}
+
 export {
+  authenticate,
   getAccountSummary,
   setAccount,
 }
