@@ -1,5 +1,5 @@
 
-const BASE_URL = 'http://localhost:8888'
+const BASE_URL = 'https://maria.alunw.com'
 
 //
 async function getAccountSummary(token) {
