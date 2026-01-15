@@ -4,6 +4,7 @@ import { useState } from 'react'
 import AccountsDataGrid from './AccountsDataGrid';
 import CssBaseline from '@mui/material/CssBaseline';
 import { Alert, Snackbar } from '@mui/material';
+import StatementUpload from './StatementUpload';
 
 function App() {
 
@@ -46,6 +47,8 @@ function App() {
             {error}
           </Alert>
         </Snackbar>}
+      
+      <StatementUpload />
     </>
   )
 }
