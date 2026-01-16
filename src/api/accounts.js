@@ -1,5 +1,6 @@
 
-const BASE_URL = 'https://maria.alunw.com'
+
+const BASE_URL = import.meta.env.VITE_API_ENDPOINT;
 
 //
 async function getAccountSummary(token) {
