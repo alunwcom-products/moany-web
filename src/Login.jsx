@@ -84,7 +84,6 @@ export default function Login({ login, onLoginChange, setError }) {
   return (
     <>
       <Box sx={{ tp: 2, pb: 2 }}>
-
         <Stack
           direction={{ xs: 'column', sm: 'row' }}
           spacing={2}
@@ -103,6 +102,13 @@ export default function Login({ login, onLoginChange, setError }) {
             variant="outlined"
             size="small" // Ensures a compact height
             sx={{ width: '200px' }}
+            slotProps={{
+              htmlInput: {
+                autocapitalize: 'none',
+                autocorrect: 'off',
+                spellCheck: 'false',
+              },
+            }}
           />
 
           <TextField
@@ -128,9 +134,6 @@ export default function Login({ login, onLoginChange, setError }) {
             }}
             type="submit" // Crucial for Enter key support
           >Login</Button>
-
-          
-
         </Stack>
       </Box>
     </>
