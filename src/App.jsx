@@ -34,7 +34,7 @@ function App() {
     <>
       <CssBaseline />
       <Login login={login} onLoginChange={handleLoginChange} setError={setError} />
-      {login.username && <AccountsDataGrid login={login} setError={setError} />}
+      {login.username && <AccountsDataGrid login={login} setError={setError} onLoginChange={handleLoginChange} />}
 
       {error &&
         <Snackbar open={true} onClose={handleErrorClose}>

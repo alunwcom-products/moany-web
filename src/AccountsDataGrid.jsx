@@ -21,7 +21,7 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 
 import { v4 as uuidv4 } from 'uuid';
-import { getAccountSummary, setAccount } from './api/accounts';
+import { getAccountSummary, setAccount, UnauthorizedError } from './api/accounts';
 
 function CustomToolbar({ token, handleFetch }) {
   const apiRef = useGridApiContext();
@@ -153,7 +153,7 @@ function CustomToolbar({ token, handleFetch }) {
   );
 }
 
-export default function AccountsDataGrid({ login, setError }) {
+export default function AccountsDataGrid({ login, setError, onLoginChange }) {
 
   const [isFetching, setIsFetching] = useState(false);
   const [accounts, setAccounts] = useState([]);
@@ -239,10 +239,19 @@ export default function AccountsDataGrid({ login, setError }) {
       handleFetch(true);
       try {
         setAccounts(await getAccountSummary(login.token));
+
       } catch (error) {
+        //console.log(error);
+        if (error instanceof UnauthorizedError) {
+          console.error('Unauthorized request.');
+          //setLogin(false);
+          onLoginChange({});
+        } else {
+          console.error('Error loading accounts summary.');
+          setError('Error loading accounts summary.');
+        }
         // TODO
-        console.error('Error loading accounts summary');
-        setError('Error loading accounts summary');
+        
       }
       handleFetch(false);
     }

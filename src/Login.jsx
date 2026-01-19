@@ -11,8 +11,6 @@ export default function Login({ login, onLoginChange, setError }) {
   // 1. Setup state to store form values
   const [credentials, setCredentials] = useState(BLANK_CREDENTIALS);
 
-  //const [error, setError] = useState({});
-
   // 2. Update state when user types
   const handleTextInputChange = (e) => {
     const { name, value } = e.target;
@@ -27,33 +25,12 @@ export default function Login({ login, onLoginChange, setError }) {
     console.log('Login Submitted.');
     event.preventDefault(); // Prevents the page from refreshing
 
-    //setError({});
-
     try {
-      // const body = JSON.stringify({ user: credentials.username, password: credentials.password });
-
-      // const response = await fetch('http://localhost:8888/user', {
-      //   method: "POST",
-      //   body: body,
-      //   headers: {
-      //     'Content-Type': 'application/json' // Tell the server you're sending JSON
-      //   },
-      // });
-      // const data = await response.json();
-
-      // console.log('Login response: ', response.status);
-
-      // if (!response.ok) {
-      //   throw new Error("Authentication failed.")
-      // }
-
       const token = await authenticate(credentials.username, credentials.password);
       console.debug('AUTH SUCCESS: ', token);
       onLoginChange({ username: credentials.username, token: token })
 
     } catch (error) {
-      //console.error('AUTH ERROR:', error);
-      //setError({ message: error.message || 'Unknown error occurred.' });
       setError('Authentication error');
       onLoginChange({});
     }
