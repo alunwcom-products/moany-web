@@ -104,8 +104,8 @@ export default function Login({ login, onLoginChange, setError }) {
             sx={{ width: '200px' }}
             slotProps={{
               htmlInput: {
-                autocapitalize: 'none',
-                autocorrect: 'off',
+                autoCapitalize: 'none',
+                autoCorrect: 'off',
                 spellCheck: 'false',
               },
             }}
