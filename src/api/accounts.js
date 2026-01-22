@@ -18,7 +18,12 @@ async function getAccountSummary(token) {
   }
 
   const data = await response.json();
-  return data.results;
+
+  const newToken = response.headers.get('x-new-token');
+  console.log('RESPONSE: ', newToken);
+
+
+  return { newToken, results: data.results };
 }
 
 // insert/update (PUT) account record supplied as JSON

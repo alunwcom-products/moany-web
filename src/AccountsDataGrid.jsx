@@ -238,25 +238,23 @@ export default function AccountsDataGrid({ login, setError, onLoginChange }) {
     async function fetchAccounts() {
       handleFetch(true);
       try {
-        setAccounts(await getAccountSummary(login.token));
+        const { newToken, results } = await getAccountSummary(login.token);
+        onLoginChange({ username: login.username, token: newToken });
+        setAccounts(results);
 
       } catch (error) {
-        //console.log(error);
         if (error instanceof UnauthorizedError) {
-          console.error('Unauthorized request.');
-          //setLogin(false);
+          // invalid or missing token
           onLoginChange({});
         } else {
           console.error('Error loading accounts summary.');
           setError('Error loading accounts summary.');
         }
-        // TODO
-        
       }
       handleFetch(false);
     }
     fetchAccounts();
-  }, [login, accountUpdated]);
+  }, [login.username, accountUpdated]);
 
   const rowUpdate = async (updatedRow, originalRow) => {
     console.log(`UPDATE: ${JSON.stringify(updatedRow, null, 2)}`);

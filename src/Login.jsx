@@ -45,7 +45,7 @@ export default function Login({ login, onLoginChange, setError }) {
   const logout = () => {
     console.log('Logout.');
     setCredentials({ username: '', password: '' })
-    onLoginChange({ username: undefined, token: undefined });
+    onLoginChange({});
   }
 
   const logoutLabel = `Logout ${login.username}`;

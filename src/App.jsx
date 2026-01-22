@@ -16,7 +16,7 @@ function App() {
   });
 
   const handleLoginChange = (newLogin) => {
-    //console.debug('Login change: ', newLogin);
+    console.debug('Login change: ', newLogin);
     setLogin(() => {
       console.log('setting saved: ', JSON.stringify(newLogin));
       sessionStorage.setItem('login', JSON.stringify(newLogin));
