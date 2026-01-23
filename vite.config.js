@@ -10,4 +10,11 @@ export default defineConfig({
       },
     }),
   ],
+  esbuild: {
+    // This will remove all console.log and debugger statements
+    drop: ['console', 'debugger'],
+  },
+  build: {
+    chunkSizeWarningLimit: 1000, // Raises limit to 1000 kB
+  },
 })
