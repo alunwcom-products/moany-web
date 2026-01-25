@@ -25,6 +25,11 @@ export default function Login({ login, onLoginChange, setError }) {
     console.log('Login Submitted.');
     event.preventDefault(); // Prevents the page from refreshing
 
+    // check both username and password are present
+    if (credentials.username.length === 0 || credentials.password.length === 0) {
+      setError('Submit a username and password');
+    }
+
     try {
       const token = await authenticate(credentials.username, credentials.password);
       console.debug('AUTH SUCCESS: ', token);
@@ -39,7 +44,6 @@ export default function Login({ login, onLoginChange, setError }) {
       prevCredentials.password = '';
       return prevCredentials;
     });
-
   };
 
   const logout = () => {
