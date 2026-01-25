@@ -172,17 +172,17 @@ export default function AccountsDataGrid({ login, setError, onLoginChange }) {
 
   const columns = [
     { field: 'uuid', headerName: 'UUID', width: 300, cellClassName: 'ro' },
-    { field: 'name', headerName: 'Account Name', width: 200, editable: true },
-    { field: 'sortcode', headerName: 'Sort Code', width: 150, editable: true },
+    { field: 'name', headerName: 'Account Name', width: 250, editable: true },
+    { field: 'sortcode', headerName: 'Sort Code', width: 120, editable: true },
     { field: 'account_num', headerName: 'Account Number', width: 150, editable: true },
     {
-      field: 'type', headerName: 'Type', width: 110, editable: true,
+      field: 'type', headerName: 'Type', width: 100, editable: true,
       type: 'singleSelect', valueOptions: ['DEBIT', 'CREDIT']
     },
     {
       field: 'active',
       headerName: 'Active',
-      width: 85,
+      width: 130,
       editable: true,
       type: 'singleSelect',
       valueFormatter: (value) => {
@@ -206,14 +206,14 @@ export default function AccountsDataGrid({ login, setError, onLoginChange }) {
       }
     },
     {
-      field: 'starting_balance', headerName: 'Starting Balance', width: 150,
+      field: 'starting_balance', headerName: 'Starting Balance', width: 140,
       type: 'number', editable: true, valueFormatter: (value) => {
         if (!value) return value;
         return currencyFormatter.format(value);
       },
     },
     {
-      field: 'latest_balance', headerName: 'Latest Balance', width: 150, cellClassName: 'ro',
+      field: 'latest_balance', headerName: 'Latest Balance', width: 140, cellClassName: 'ro',
       type: 'number', editable: true, valueFormatter: (value) => {
         if (!value) return value;
         return currencyFormatter.format(value);
@@ -231,8 +231,8 @@ export default function AccountsDataGrid({ login, setError, onLoginChange }) {
       paginationModel: {
         pageSize: 25
       }
-    }
-  }
+    },
+  };
 
   useEffect(() => {
     async function fetchAccounts() {
@@ -268,12 +268,28 @@ export default function AccountsDataGrid({ login, setError, onLoginChange }) {
     console.error('Error handler called! ' + error);
   }
 
+  // store filter
+  const FILTER_STORAGE_KEY = 'account-filter';
+  const [filterModel, setFilterModel] = useState(() => {
+    const savedFilter = localStorage.getItem(FILTER_STORAGE_KEY);
+    return savedFilter ? JSON.parse(savedFilter) : {
+      items: [{ field: 'active', operator: 'is', value: true }], // by default, show only active accounts
+    };
+  });
+
+  const onFilterChange = (newModel) => {
+    setFilterModel(newModel);
+    localStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify(newModel));
+  };
+
   return (
     <div style={{ height: 400, width: '100%' }}>
       <DataGrid
         columns={columns}
         rows={accounts}
         initialState={initialState}
+        filterModel={filterModel}
+        onFilterModelChange={onFilterChange}
         loading={isFetching}
         slots={{ toolbar: CustomToolbar }}
         slotProps={{
